@@ -35,9 +35,12 @@ kaboom({
   global: true,
   plugins: [ peditPlugin, asepritePlugin, kbmspritePlugin ],
 });
-loadKbmsprite("anemy", "sprites/anemy.kbmsprite");
+loadKbmsprite("dog", "sprites/dog.kbmsprite");
+loadKbmsprite("enemy", "sprites/enemy.kbmsprite");
 loadKbmsprite("ground", "sprites/ground.kbmsprite");
 loadKbmsprite("player", "sprites/player.kbmsprite");
+loadKbmsprite("sky", "sprites/sky.kbmsprite");
+loadSound("bensound-jazzyfrenchy", "sounds/bensound-jazzyfrenchy.mp3");
 scene("main", (args = {}) => {
 const player = add([
   sprite('player'),
@@ -46,7 +49,7 @@ pos(20,20),
 body()
 ])
 
-const MOVE_SPEED = 200
+const MOVE_SPEED = 120
 keyDown('right', ()=>{
   player.move(MOVE_SPEED,0)
 })
@@ -55,22 +58,65 @@ keyDown('left', ()=>{
   player.move(-MOVE_SPEED,0)
 })
 
+keyDown('space', ()=>{
+ if(player.grounded()){
+   player.jump(player.jumpForce*0.7)
+ }
+})
+
+layers([
+		"bg",
+		"obj",
+		"ui",
+	], "obj");
+
+
+add([
+		sprite("sky"),
+		scale(width()/20, height()/50),
+		layer("bg"),
+	]);
+
 
 addLevel([
   '   @ ',
+  '  #  ',
   '     ',
-  '     ',
-  'xxxxx',
+  'xxxxxxxxxxx',
 ], {
   width:30,
-  height:48,
+  height:47,
+  '#':[sprite('dog'),body(),scale(0.5)],
   'x':[sprite('ground'),solid()],
-  '@':[sprite('anemy'), scale(0.5),body(),'dangerous']
+  '@':[sprite('enemy'), scale(0.5),body(),'dangerous']
 })
 
 player.collides('dangerous',()=>{
 destroy(player)
 })
+});
+scene("practice", (args = {}) => {
+// scene("practice", () => {
+//     // all objs are bound to a scene
+//     add(/* ... */)
+//     // all events are bound to a scene
+//     keyPress(/* ... */)
+// });
+
+
+
+
+// let fibonacci = function (n) {
+//   const memo = [0, 1];
+//   const aux = (n) => {
+//     // 이미 해결한 적이 있으면, 메모해둔 정답을 리턴한다.
+//     if (memo[n] !== undefined) return memo[n];
+//     // 새롭게 풀어야하는 경우, 문제를 풀고 메모해둔다.
+//     memo[n] = aux(n - 1) + aux(n - 2);
+//     return memo[n];
+//   };
+//   return aux(n);
+// };
 });
 start("main");
 
